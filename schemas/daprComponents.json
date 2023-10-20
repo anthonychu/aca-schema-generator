@@ -1,0 +1,127 @@
+{
+  "type": "object",
+  "properties": {
+    "componentType": {
+      "type": "string",
+      "description": "Component type"
+    },
+    "ignoreErrors": {
+      "oneOf": [
+        {
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "type": "string",
+          "pattern": "^\\[([^\\[].*)?\\]$",
+          "description": "Deployment template expression. See https://aka.ms/arm-template-expressions for more details on the ARM expression syntax.",
+          "isReferenced": true
+        }
+      ],
+      "description": "Boolean describing if the component errors are ignores"
+    },
+    "initTimeout": {
+      "type": "string",
+      "description": "Initialization timeout"
+    },
+    "metadata": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Metadata property name."
+              },
+              "secretRef": {
+                "type": "string",
+                "description": "Name of the Dapr Component secret from which to pull the metadata property value."
+              },
+              "value": {
+                "type": "string",
+                "description": "Metadata property value."
+              }
+            },
+            "description": "Dapr component metadata.",
+            "additionalProperties": false,
+            "isReferenced": true
+          }
+        },
+        {
+          "type": "string",
+          "pattern": "^\\[([^\\[].*)?\\]$",
+          "description": "Deployment template expression. See https://aka.ms/arm-template-expressions for more details on the ARM expression syntax.",
+          "isReferenced": true
+        }
+      ],
+      "description": "Component metadata"
+    },
+    "scopes": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string",
+          "pattern": "^\\[([^\\[].*)?\\]$",
+          "description": "Deployment template expression. See https://aka.ms/arm-template-expressions for more details on the ARM expression syntax.",
+          "isReferenced": true
+        }
+      ],
+      "description": "Names of container apps that can use this Dapr component"
+    },
+    "secrets": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "description": "Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+              },
+              "keyVaultUrl": {
+                "type": "string",
+                "description": "Azure Key Vault URL pointing to the secret referenced by the container app."
+              },
+              "name": {
+                "type": "string",
+                "description": "Secret Name."
+              },
+              "value": {
+                "type": "string",
+                "description": "Secret Value."
+              }
+            },
+            "description": "Secret definition.",
+            "additionalProperties": false,
+            "isReferenced": true
+          }
+        },
+        {
+          "type": "string",
+          "pattern": "^\\[([^\\[].*)?\\]$",
+          "description": "Deployment template expression. See https://aka.ms/arm-template-expressions for more details on the ARM expression syntax.",
+          "isReferenced": true
+        }
+      ],
+      "description": "Collection of secrets used by a Dapr component"
+    },
+    "secretStoreComponent": {
+      "type": "string",
+      "description": "Name of a Dapr component to retrieve component secrets from"
+    },
+    "version": {
+      "type": "string",
+      "description": "Component version"
+    }
+  },
+  "description": "Dapr Component resource specific properties",
+  "additionalProperties": false
+}
