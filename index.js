@@ -10,7 +10,7 @@ async function main() {
         'schemas/jobs.json');
     await saveResource(
         'https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/main/schemas/2023-05-02-preview/Microsoft.App.json#/definitions/DaprComponentProperties',
-        'schemas/daprComponents.json');
+        'schemas/managedEnvironments_daprComponents_properties.json');
 }
 
 
@@ -20,7 +20,6 @@ async function saveResource(url, filename) {
 }
 
 const cache = {};
-
 
 async function getResource(url, parentResource) {
     const isHash = url.startsWith('#');
@@ -63,6 +62,15 @@ async function getResource(url, parentResource) {
     };
     findRefs(data);
 
+    // recursively fetch all referenced resources
+    for (const ref of refs) {
+        const refData = await getResource(ref.$ref, fetched ? fullData : parentResource);
+        Object.assign(ref, refData);
+        ref.isReferenced = true;
+        delete ref.$ref;
+    }
+
+    // don't mark any properties as required
     if (noRequiredProperties) {
         const removeRequired = (obj) => {
             if (obj.required) {
@@ -77,7 +85,7 @@ async function getResource(url, parentResource) {
         removeRequired(data);
     }
 
-
+    // don't allow additional properties unless explicitly allowed
     if (!allowAdditionalProperties) {
         const disallowAdditionalProperties = (obj) => {
             if (obj.properties && !obj.additionalProperties) {
@@ -90,13 +98,6 @@ async function getResource(url, parentResource) {
             }
         };
         disallowAdditionalProperties(data);
-    }
-
-    for (const ref of refs) {
-        const refData = await getResource(ref.$ref, fetched ? fullData : parentResource);
-        Object.assign(ref, refData);
-        ref.isReferenced = true;
-        delete ref.$ref;
     }
 
     if (fetched) {

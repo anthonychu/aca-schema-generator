@@ -1,0 +1,35 @@
+location: East US
+properties:
+  environmentId: "/subscriptions/34adfa4f-cedf-4dc0-ba29-b6d1a69ab345/resourceGroups/rg/providers/Microsoft.App/managedEnvironments/demokube"
+  configuration:
+    replicaTimeout: 10
+    replicaRetryLimit: 10
+    manualTriggerConfig:
+      replicaCompletionCount: 1
+      parallelism: 4
+    triggerType: Manual
+  template:
+    containers:
+    - image: repo/testcontainerAppsJob0:v1
+      name: testcontainerAppsJob0
+      probes:
+      - type: Liveness
+        httpGet:
+          path: "/health"
+          port: 8080
+          httpHeaders:
+          - name: Custom-Header
+            value: Awesome
+        initialDelaySeconds: 5
+        periodSeconds: 3
+    initContainers:
+    - image: repo/testcontainerAppsJob0:v4
+      name: testinitcontainerAppsJob0
+      resources:
+        cpu: 0.2
+        memory: 100Mi
+      command:
+      - "/bin/sh"
+      args:
+      - "-c"
+      - while true; do echo hello; sleep 10;done
