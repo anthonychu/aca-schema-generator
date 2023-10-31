@@ -11,6 +11,9 @@ async function main() {
     await saveResource(
         'https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/main/schemas/2023-05-02-preview/Microsoft.App.json#/definitions/DaprComponentProperties',
         'schemas/managedEnvironments_daprComponents_properties.json');
+    await saveResource(
+        'https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/main/schemas/2023-05-02-preview/Microsoft.App.json#/definitions/Template',
+        'schemas/containerApps_template.json');
 }
 
 
